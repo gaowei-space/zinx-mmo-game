@@ -5,7 +5,22 @@ import (
 	"testing"
 )
 
-func TestNewAOIManager(t *testing.T) {
+// func TestNewAOIManager(t *testing.T) {
+// 	aoiMgr := NewAOIManager(0, 250, 5, 0, 250, 5)
+// 	fmt.Println(aoiMgr)
+// }
+
+func TestGetSurroundGridsByGid(t *testing.T) {
 	aoiMgr := NewAOIManager(0, 250, 5, 0, 250, 5)
-	fmt.Println(aoiMgr)
+
+	for gid, _ := range aoiMgr.Grids {
+		// 得到当前九宫格的所有格子信息
+		grids := aoiMgr.GetSurroundGridsByGid(gid)
+		fmt.Println("gid：", gid, " grids len：", len(grids))
+		gIDs := make([]int, 0, len(grids))
+		for _, grid := range grids {
+			gIDs = append(gIDs, grid.GID)
+		}
+		fmt.Println("surrounding grid IDs are", gIDs)
+	}
 }
