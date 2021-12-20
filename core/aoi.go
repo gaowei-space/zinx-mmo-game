@@ -24,6 +24,7 @@ func NewAOIManager(minX, maxX, cntsX, minY, maxY, cntsY int) *AOIManager {
 		MinY:  minY,  // 区域的上边界坐标
 		MaxY:  maxY,  // 区域的下边界坐标
 		CntsY: cntsY, // Y方向格子数量
+		Grids: make(map[int]*Grid),
 	}
 
 	// 初始化区域中所有格子
@@ -107,11 +108,11 @@ func (m *AOIManager) GetSurroundGridsByGid(gID int) (grids []*Grid) {
 		idy := v / m.CntsY
 
 		if idy > 0 {
-			grids = append(grids, m.Grids[idy-m.CntsX])
+			grids = append(grids, m.Grids[v-m.CntsX])
 		}
 
 		if idy < m.CntsY-1 {
-			grids = append(grids, m.Grids[idy-m.CntsX])
+			grids = append(grids, m.Grids[v+m.CntsX])
 		}
 	}
 

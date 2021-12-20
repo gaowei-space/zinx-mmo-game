@@ -16,11 +16,11 @@ func TestGetSurroundGridsByGid(t *testing.T) {
 	for gid, _ := range aoiMgr.Grids {
 		// 得到当前九宫格的所有格子信息
 		grids := aoiMgr.GetSurroundGridsByGid(gid)
-		fmt.Println("gid：", gid, " grids len：", len(grids))
+		fmt.Println("gid:", gid, " grids len:", len(grids))
 		gIDs := make([]int, 0, len(grids))
 		for _, grid := range grids {
 			gIDs = append(gIDs, grid.GID)
 		}
-		fmt.Println("surrounding grid IDs are", gIDs)
+		fmt.Printf("grid ID: %d, surrounding grid IDs are %v\n", gid, gIDs)
 	}
 }
