@@ -1,0 +1,5 @@
+syntax = "proto3";  //Proto协议
+package pb;                     //当前包名
+
+option csharp_namespace = "Pb";  //给C#提供的选项
+option go_package = "zinx-mmo-game/pb";

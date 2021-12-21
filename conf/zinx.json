@@ -1,0 +1,7 @@
+{
+    "Name": "MOO GAME",
+    "Host": "0.0.0.0",
+    "TcpPort": 8899,
+    "MaxConn": 1000,
+    "WorkerPoolSize": 10
+}
