@@ -1,5 +1,29 @@
 syntax = "proto3";  //Proto协议
 package pb;                     //当前包名
 
-option csharp_namespace = "Pb";  //给C#提供的选项
-option go_package = "zinx-mmo-game/pb";
+option csharp_namespace = "Pb";                //给C#提供的选项
+option go_package       = "zinx-mmo-game/pb";
+
+// 同步客户端玩家ID
+message SyncPid {
+    int32 Pid = 1; // 服务器新生成玩家ID
+}
+
+// 玩家位置
+message Position {
+    float X = 1;
+    float Y = 2;
+    float Z = 3;
+    float V = 4;
+}
+
+// 玩家广播数据
+message BroadCast {
+    int32 Pid = 1;
+    int32 Tp  = 2; // 1-世界聊天，2-玩家位置，3-动作，4-移动之后的坐标信息更新
+    oneof Data {
+        string   Content    = 3; // 玩家的聊天信息
+        Position P          = 4; // 广播玩家的位置
+        int32    ActionData = 5; // 玩家具体的动作
+    }
+}
