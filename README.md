@@ -1,2 +1,2 @@
 # zinx-mmo-game
-mom game by zinc
+mmo game by zinc
