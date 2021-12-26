@@ -27,3 +27,7 @@ message BroadCast {
         int32    ActionData = 5; // 玩家具体的动作
     }
 }
+
+message Talk {
+    string content=1;
+}
