@@ -24,7 +24,7 @@ message BroadCast {
     oneof Data {
         string   Content    = 3; // 玩家的聊天信息
         Position P          = 4; // 广播玩家的位置
-        int32    ActionData = 5; // 玩家具体的动作
+        int32     ActionData = 5; // 玩家具体的动作
     }
 }
 

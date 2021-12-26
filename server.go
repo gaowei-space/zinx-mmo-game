@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"zinx-mmo-game/apis"
 	"zinx-mmo-game/core"
 	"zinx/ziface"
 	"zinx/znet"
@@ -17,6 +18,12 @@ func OnConnecionAdd(conn ziface.IConnection) {
 	// 给客户端发送msgID:200的消息，目的是广播当前用户端至其他用户端
 	player.BroadCastStartPosition()
 
+	// 将当前上线的玩家添加至WorldManager中
+	core.WorldManagerObj.AddPlayer(player)
+
+	// 将该连接绑定一个pid属性
+	conn.SetProperty("pid", player.Pid)
+
 	fmt.Println("=====> Player pidId = ", player.Pid, " arrived <=====")
 }
 
@@ -26,6 +33,8 @@ func main() {
 
 	// 注册客户端连接建立函数
 	s.SetOnConnStart(OnConnecionAdd)
+
+	s.AddRouter(2, &apis.WorldChatApi{})
 
 	// 启动
 	s.Serve()
