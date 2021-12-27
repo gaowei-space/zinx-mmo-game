@@ -6,7 +6,7 @@ option go_package       = "zinx-mmo-game/pb";
 
 // 同步客户端玩家ID
 message SyncPid {
-    int32 Pid = 1; // 服务器新生成玩家ID
+    int32 Pid = 1;  // 服务器新生成玩家ID
 }
 
 // 玩家位置
@@ -20,14 +20,23 @@ message Position {
 // 玩家广播数据
 message BroadCast {
     int32 Pid = 1;
-    int32 Tp  = 2; // 1-世界聊天，2-玩家位置，3-动作，4-移动之后的坐标信息更新
+    int32 Tp  = 2;  // 1-世界聊天，2-玩家位置，3-动作，4-移动之后的坐标信息更新
     oneof Data {
-        string   Content    = 3; // 玩家的聊天信息
-        Position P          = 4; // 广播玩家的位置
-        int32     ActionData = 5; // 玩家具体的动作
+        string   Content    = 3;  // 玩家的聊天信息
+        Position P          = 4;  // 广播玩家的位置
+        int32    ActionData = 5;  // 玩家具体的动作
     }
 }
 
 message Talk {
-    string content=1;
+    string content = 1;
+}
+
+message SyncPlayers {
+    repeated Player ps = 1;
+}
+
+message Player {
+    int32    Pid = 1;
+    Position P   = 2;
 }
