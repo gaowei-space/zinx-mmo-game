@@ -24,6 +24,9 @@ func OnConnecionAdd(conn ziface.IConnection) {
 	// 将该连接绑定一个pid属性
 	conn.SetProperty("pid", player.Pid)
 
+	// 同步周边玩家上线信息，与显示周边玩家信息
+	player.SyncSurrounding()
+
 	fmt.Println("=====> Player pidId = ", player.Pid, " arrived <=====")
 }
 

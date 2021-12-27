@@ -11,31 +11,31 @@ import (
 )
 
 type Player struct {
-	Pid int32 // 用户ID
+	Pid  int32              // 用户ID
 	Conn ziface.IConnection // 当前玩家的连接
-	X float32 // 平面X坐标
-	Y float32 // 高度
-	Z float32 // 平面y坐标
-	V float32 // 旋转0-360角度
+	X    float32            // 平面X坐标
+	Y    float32            // 高度
+	Z    float32            // 平面y坐标
+	V    float32            // 旋转0-360角度
 }
 
-var PidGen int32 = 1 // 用户ID生成器
+var PidGen int32 = 1  // 用户ID生成器
 var IdLock sync.Mutex // 保护PidGen的互斥锁
 
 func NewPlayer(conn ziface.IConnection) *Player {
 	// 生成一个PID
 	IdLock.Lock()
-	id :=PidGen
-	PidGen ++
+	id := PidGen
+	PidGen++
 	IdLock.Unlock()
 
 	p := &Player{
-		Pid: id,
+		Pid:  id,
 		Conn: conn,
-		X: float32(160+rand.Intn(10)), // 随机在160坐标点 基于X轴偏移若干坐标
-		Y: 0,
-		Z: float32(140+rand.Intn(20)), // 随机在140坐标点 基于Y轴偏移若干坐标
-		V: 0,
+		X:    float32(160 + rand.Intn(10)), // 随机在160坐标点 基于X轴偏移若干坐标
+		Y:    0,
+		Z:    float32(140 + rand.Intn(20)), // 随机在140坐标点 基于Y轴偏移若干坐标
+		V:    0,
 	}
 
 	return p
@@ -72,7 +72,7 @@ func (p *Player) SyncPid() {
 func (p *Player) BroadCastStartPosition() {
 	data := &pb.BroadCast{
 		Pid: p.Pid,
-		Tp: 2,
+		Tp:  2,
 		Data: &pb.BroadCast_P{
 			P: &pb.Position{
 				X: p.X,
@@ -91,7 +91,7 @@ func (p *Player) Talk(content string) {
 	// 1 组件 MsgID:200 proto数据
 	proto_msg := &pb.BroadCast{
 		Pid: p.Pid,
-		Tp: 1,
+		Tp:  1,
 		Data: &pb.BroadCast_Content{
 			Content: content,
 		},
@@ -104,4 +104,52 @@ func (p *Player) Talk(content string) {
 	for _, player := range players {
 		player.SendMsg(200, proto_msg)
 	}
+}
+
+func (p *Player) SyncSurrounding() {
+
+	// 获取周边玩家ID
+	pids := WorldManagerObj.AOIManager.GetPidsByPos(p.X, p.Z)
+	// 根据pid得到所有玩家对象
+	players := make([]*Player, 0, len(pids))
+	for _, pid := range pids {
+		players = append(players, WorldManagerObj.GetPlayerByPid(int32(pid)))
+	}
+
+	// 1 同步自己位置到周围玩家
+	msg := &pb.BroadCast{
+		Pid: p.Pid,
+		Tp:  2, //广播
+		Data: &pb.BroadCast_P{
+			P: &pb.Position{
+				X: p.X,
+				Z: p.Z,
+				Y: p.Y,
+				V: p.V,
+			},
+		},
+	}
+	for _, player := range players {
+		player.SendMsg(200, msg)
+	}
+
+	// 2 同步周围玩家在自己的视野中
+	playersData := make([]*pb.Player, 0, len(players))
+	for _, player := range players {
+		p := &pb.Player{
+			Pid: player.Pid,
+			P: &pb.Position{
+				X: player.X,
+				Z: player.Z,
+				Y: player.Y,
+				V: player.V,
+			},
+		}
+		playersData = append(playersData, p)
+	}
+
+	syncPlayers := &pb.SyncPlayers{
+		Ps: playersData[:],
+	}
+	p.SendMsg(202, syncPlayers)
 }
