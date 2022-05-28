@@ -1,6 +1,6 @@
 ### zinx-mmo-game
 
-> 基于zinx框架开发的游戏服务端API
+> 基于[zinx](https://github.com/aceld/zinx)框架开发的MMO游戏服务端API
 
 ### 试玩
 
